@@ -106,9 +106,6 @@ def history():
     """Show history of transactions"""
     buy = db.execute("SELECT * FROM transactions WHERE user_id = ? AND type='BUY'", session["user_id"])
     sell = db.execute("SELECT * FROM transactions WHERE user_id = ? AND type='SELL'", session["user_id"])
-    print(buy)
-    print()
-    print(sell)
     return render_template("history.html", buy=buy, sell=sell, usd=usd)
 
 
@@ -202,12 +199,15 @@ def register():
 
         # Password generating process
         hash = generate_password_hash(upass)
-
+        checks = db.execute("SELECT * FROM users")
+        for check in checks:
+            if uname in check["username"]:
+                return apology(f'The username is not available kindly use another')
         try:
             db.execute("INSERT INTO users (username,hash) VALUES (?, ?)", uname, hash)
             return redirect("/")
         except:
-            return apology(f'The username "{uname}" is already registered kindly use another')
+            pass
 
     else:
         return render_template("register.html")
@@ -237,5 +237,5 @@ def sell():
 
         return redirect("/")
     else:
-        values = db.execute("SELECT * FROM transactions WHERE user_id = ? GROUP BY symbol", session["user_id"])
+        values = db.execute("SELECT symbol, name, price, SUM(share) AS shares FROM transactions WHERE user_id = ? GROUP BY symbol", session["user_id"])
         return render_template("sell.html", values=values)

@@ -10,7 +10,9 @@
             <select name="symbol">
                     <option selected disabled>Select Symbol</option>
                 {% for value in values %}
-                    <option> {{ value.symbol }}</option>
+                    {% if (value.shares >= 1) %}
+                        <option> {{ value.symbol }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>
