@@ -237,5 +237,5 @@ def sell():
 
         return redirect("/")
     else:
-        values = db.execute("SELECT symbol, name, price, SUM(share) AS shares FROM transactions WHERE user_id = ? GROUP BY symbol", session["user_id"])
+        values = db.execute("SELECT symbol, name, price, SUM(shares) AS shares FROM transactions WHERE user_id = ? GROUP BY symbol", session["user_id"])
         return render_template("sell.html", values=values)
